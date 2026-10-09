@@ -3,14 +3,14 @@
  *
  * The ONLY keys whose signature can raise autonomous authority. Each is the
  * public half of a Secure Enclave P-256 key created by `ashlr-custody init`
- * on Mason's Mac: the private half cannot leave the Secure Enclave and every
- * signature needs Touch ID (or the login password).
+ * on the repo owner's Mac: the private half cannot leave the Secure Enclave
+ * and every signature needs Touch ID (or the login password).
  *
- * HOW A KEY GETS HERE: Mason runs `ashlr authority setup` (or
+ * HOW A KEY GETS HERE: the owner runs `ashlr authority setup` (or
  * `ashlr-custody init`), which prints `{keyId, publicKeyPem}`, and commits it
- * to this file in HIS OWN pull request. That PR touches a Tier-1 protected
+ * to this file in their own pull request. That PR touches a Tier-1 protected
  * path, so the fleet can never author or merge it (gate G1 routes it to the
- * owner lane, CODEOWNERS requires Mason's review).
+ * owner lane, CODEOWNERS requires the owner's review).
  *
  * NOTHING ELSE ADDS TRUST. No environment variable, config key, CLI flag or
  * file (not ~/.ashlr/activation/trust-roots.json, not ~/.ashlr/authority/*)
@@ -24,12 +24,18 @@
  */
 import type { StandingGrantTrustRoot } from './types.js';
 
-/** Intentionally empty until Mason commits his custody public key (Phase 0). */
+/**
+ * This fork's trust root (Phase 0): chrisskaling's own custody key, created
+ * on this Mac via `ashlr authority setup`. Replaces the upstream
+ * ashlrai/phantom root (Mason Wyatt's key, se-p256-9c1330e3bd72cf3e), which
+ * was inherited unmodified when this repo was forked and has no authority
+ * over this fork's agents or repos.
+ */
 export const STANDING_GRANT_TRUST_ROOTS: readonly Readonly<StandingGrantTrustRoot>[] = Object.freeze([
   Object.freeze({
-    keyId: 'se-p256-9c1330e3bd72cf3e',
+    keyId: 'se-p256-34ebbfc66126cfee',
     alg: 'ES256' as const,
-    publicKeyPem: '-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEaR0NPKbqxZLsqsQfvfPd8YgfPJQz\nkDLeyeUL4pzlpEVYn6gNi/Tfd8YsFjxyhqhrViApx3Kc5qGYVPULyaE+7g==\n-----END PUBLIC KEY-----\n',
+    publicKeyPem: '-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEozkoMHf1KfxlwU5QgY/LuI7xaXOm\nQYMpViPa/Trh70I7g9R/fBOsqKb1dJa7IKxuCxfbe+NM2Og5jbMWLsD2Bg==\n-----END PUBLIC KEY-----\n',
   }),
 ]);
 
